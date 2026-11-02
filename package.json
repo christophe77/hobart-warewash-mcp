@@ -4,18 +4,28 @@
   "description": "Unofficial MCP server for Hobart commercial dishwashers (Hobart Cloud-to-Cloud / SmartConnect API). Works with Claude, ChatGPT and any MCP client: machines, active errors, temperatures, daily consumption, hygiene protocol, opt-in settings.",
   "keywords": [
     "hobart",
+    "hobart-dishwasher",
     "warewash",
+    "warewashing",
     "dishwasher",
+    "commercial-dishwasher",
     "commercial-kitchen",
+    "foodservice",
     "smartconnect",
+    "visiotronic",
+    "haccp",
     "iot",
     "mcp",
     "mcp-server",
     "model-context-protocol",
     "claude",
+    "claude-code",
+    "claude-desktop",
     "chatgpt",
+    "openai",
     "ai",
-    "llm"
+    "llm",
+    "ai-assistant"
   ],
   "homepage": "https://github.com/christophe77/hobart-warewash-mcp#readme",
   "bugs": {
@@ -38,7 +48,9 @@
     ".claude-plugin",
     ".mcp.json",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "README.fr.md",
+    "glama.json"
   ],
   "engines": {
     "node": ">=22.12.0"
