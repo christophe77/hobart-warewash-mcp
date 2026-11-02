@@ -1,0 +1,61 @@
+{
+  "name": "hobart-warewash-mcp",
+  "version": "0.1.0",
+  "description": "Unofficial MCP server for Hobart commercial dishwashers (Hobart Cloud-to-Cloud / SmartConnect API). Works with Claude, ChatGPT and any MCP client: machines, active errors, temperatures, daily consumption, hygiene protocol, opt-in settings.",
+  "keywords": [
+    "hobart",
+    "warewash",
+    "dishwasher",
+    "commercial-kitchen",
+    "smartconnect",
+    "iot",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "claude",
+    "chatgpt",
+    "ai",
+    "llm"
+  ],
+  "homepage": "https://github.com/christophe77/hobart-warewash-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/christophe77/hobart-warewash-mcp/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/christophe77/hobart-warewash-mcp.git"
+  },
+  "license": "Apache-2.0",
+  "author": "christophe77",
+  "mcpName": "io.github.christophe77/hobart-warewash-mcp",
+  "type": "module",
+  "bin": {
+    "hobart-warewash-mcp": "dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "skills",
+    ".claude-plugin",
+    ".mcp.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node dist/bin.js",
+    "start:http": "node dist/bin.js --http"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "^2.3.1",
+    "@types/node": "22.20.5",
+    "typescript": "6.0.3"
+  }
+}

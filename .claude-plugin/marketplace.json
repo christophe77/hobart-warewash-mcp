@@ -1,0 +1,16 @@
+{
+  "name": "hobart-warewash-mcp",
+  "owner": {
+    "name": "christophe77"
+  },
+  "metadata": {
+    "description": "Unofficial Hobart dishwasher MCP server and skill"
+  },
+  "plugins": [
+    {
+      "name": "hobart-warewash",
+      "source": "./",
+      "description": "Hobart commercial dishwashers via the Hobart Cloud-to-Cloud API (MCP server + skill). Unofficial."
+    }
+  ]
+}

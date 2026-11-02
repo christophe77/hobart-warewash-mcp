@@ -1,0 +1,20 @@
+{
+  "name": "hobart-warewash",
+  "version": "0.1.0",
+  "description": "Unofficial. Query and (optionally) configure Hobart commercial dishwashers through the Hobart Cloud-to-Cloud API: machine list, active errors, temperatures, daily consumption and hygiene protocol.",
+  "author": {
+    "name": "christophe77",
+    "url": "https://github.com/christophe77"
+  },
+  "homepage": "https://github.com/christophe77/hobart-warewash-mcp",
+  "repository": "https://github.com/christophe77/hobart-warewash-mcp",
+  "license": "Apache-2.0",
+  "keywords": [
+    "hobart",
+    "warewash",
+    "dishwasher",
+    "smartconnect",
+    "iot",
+    "mcp"
+  ]
+}
