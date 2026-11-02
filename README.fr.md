@@ -18,7 +18,7 @@ Cloud-to-Cloud (C2C), Visiotronic 1.5** :
 - les consommations du jour : eau, énergie, détergent, produit de rinçage
 - le **protocole d'hygiène** : une entrée par cycle de lavage, avec son programme
 - en option : enregistrer une machine, modifier dosages, densités et
-  horaires de démarrage automatique — seulement si vous l'activez, et
+  horaires de démarrage automatique, seulement si vous l'activez, et
   seulement après votre confirmation
 
 Il est **en lecture seule par défaut** : les outils d'écriture n'existent
@@ -33,15 +33,15 @@ pas tant que `HOBART_ALLOW_WRITE=true` n'est pas défini.
 
 ## Pourquoi ?
 
-Un lave-vaisselle Hobart connecté enregistre des données utiles —
-températures, erreurs, consommations, chaque cycle — mais elles restent
+Un lave-vaisselle Hobart connecté enregistre des données utiles
+(températures, erreurs, consommations, chaque cycle), mais elles restent
 dans l'app Hobart SmartConnect, où l'on peut les consulter, pas les
 interroger.
 
 Ce serveur fait le pont entre l'API Hobart C2C et n'importe quel client
 [Model Context Protocol](https://modelcontextprotocol.io). Posez votre
-question en français — _« Le lave-vaisselle de la cuisine centrale a-t-il
-atteint sa température de rinçage aujourd'hui ? »_ — l'assistant appelle
+question en français, _« Le lave-vaisselle de la cuisine centrale a-t-il
+atteint sa température de rinçage aujourd'hui ? »_, et l'assistant appelle
 un outil précis et répond à partir des données de la machine, sans deviner.
 
 En novembre 2026, il n'existait aucun autre serveur MCP, plugin ou SDK
@@ -49,6 +49,43 @@ public pour l'API Hobart C2C / SmartConnect (recherche : registres MCP,
 GitHub, npm, PyPI).
 
 ## Démarrage rapide
+
+### 1. Enregistrer vos identifiants Hobart
+
+Créez `~/.config/hobart-warewash-mcp/.env` (sous Windows
+`%USERPROFILE%\.config\hobart-warewash-mcp\.env`) :
+
+```bash
+HOBART_USERNAME=vous@exemple.fr
+HOBART_PASSWORD=votre-mot-de-passe
+# HOBART_ALLOW_WRITE=true   # seulement pour activer les outils d'écriture
+```
+
+Les variables d'environnement, si elles sont définies, priment sur ce fichier.
+
+### 2. Connecter votre assistant IA
+
+**Claude Code : plugin (serveur MCP + skill)**
+
+```bash
+claude plugin marketplace add christophe77/hobart-warewash-mcp
+claude plugin install hobart-warewash@hobart-warewash-mcp
+```
+
+**Claude Desktop, Cursor, VS Code, Windsurf, Cline… (stdio local)**
+
+```json
+{
+  "mcpServers": {
+    "hobart-warewash": {
+      "command": "npx",
+      "args": ["-y", "hobart-warewash-mcp@0.1.0"]
+    }
+  }
+}
+```
+
+### Depuis les sources
 
 ```bash
 git clone https://github.com/christophe77/hobart-warewash-mcp.git
@@ -59,35 +96,13 @@ cp .env.example .env    # renseigner HOBART_USERNAME et HOBART_PASSWORD
 node scripts/smoke.mjs  # appelle tous les outils de lecture sur l'API réelle
 ```
 
-### Claude Code — plugin (serveur MCP + skill)
-
-Depuis le dossier qui contient votre clone :
-
-```bash
-claude plugin marketplace add ./hobart-warewash-mcp
-claude plugin install hobart-warewash@hobart-warewash-mcp
-```
-
-### Claude Desktop, Cursor, VS Code, Windsurf, Cline… (stdio local)
-
-```json
-{
-  "mcpServers": {
-    "hobart-warewash": {
-      "command": "node",
-      "args": ["/chemin/vers/hobart-warewash-mcp/dist/bin.js"]
-    }
-  }
-}
-```
-
 ### ChatGPT et claude.ai (connecteur distant)
 
 Les assistants web et mobiles n'acceptent que des serveurs MCP distants
 en HTTPS :
 
 ```bash
-npm run start:http                              # http://127.0.0.1:3333/mcp
+npx -y hobart-warewash-mcp@0.1.0 --http         # http://127.0.0.1:3333/mcp
 cloudflared tunnel --url http://localhost:3333  # ou : ngrok http 3333
 ```
 
@@ -105,7 +120,7 @@ URL du connecteur : `https://<votre-hôte>/mcp/<MCP_HTTP_SECRET>`.
 - « Quelles étaient les températures de lavage et de rinçage au dernier cycle ? »
 - « Combien d'eau et d'énergie chaque machine a consommé hier ? »
 - « Montre-moi le protocole d'hygiène du jour : combien de cycles, quels programmes ? »
-- En mode écriture : « Règle le démarrage automatique n°1 à 06:30 » — l'assistant
+- En mode écriture : « Règle le démarrage automatique n°1 à 06:30 ». L'assistant
   lit la valeur actuelle, affiche ancien → nouveau, et attend votre accord.
 
 ## Outils MCP

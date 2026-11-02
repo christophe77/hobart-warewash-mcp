@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "hobart-warewash": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "hobart-warewash-mcp@0.1.0"
+      ],
+      "env": {
+        "HOBART_USERNAME": "${HOBART_USERNAME:-}",
+        "HOBART_PASSWORD": "${HOBART_PASSWORD:-}",
+        "HOBART_ALLOW_WRITE": "${HOBART_ALLOW_WRITE:-false}"
+      }
+    }
+  }
+}

@@ -13,7 +13,7 @@ import { HobartClient } from './hobart-client.js';
 import { serveHttp } from './http.js';
 import { createServer } from './server.js';
 
-const VERSION = '0.1.0';
+const VERSION = '0.1.0'; // keep in sync with package.json, server.json and the plugin
 
 async function main(): Promise<void> {
   const config = loadConfig();

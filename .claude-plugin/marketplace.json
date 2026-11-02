@@ -4,13 +4,14 @@
     "name": "christophe77"
   },
   "metadata": {
-    "description": "Unofficial Hobart dishwasher MCP server and skill"
+    "description": "Claude Code plugin for Hobart commercial dishwashers (unofficial): MCP server + skill."
   },
   "plugins": [
     {
       "name": "hobart-warewash",
-      "source": "./",
-      "description": "Hobart commercial dishwashers via the Hobart Cloud-to-Cloud API (MCP server + skill). Unofficial."
+      "source": "./plugins/hobart-warewash",
+      "description": "Hobart commercial dishwashers via the Hobart Cloud-to-Cloud API (MCP server + skill). Unofficial.",
+      "category": "productivity"
     }
   ]
 }

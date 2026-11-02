@@ -1,0 +1,42 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.christophe77/hobart-warewash-mcp",
+  "title": "Hobart Warewash",
+  "description": "Unofficial MCP server for Hobart dishwashers: errors, temperatures, consumption, hygiene log.",
+  "repository": {
+    "url": "https://github.com/christophe77/hobart-warewash-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/christophe77/hobart-warewash-mcp#readme",
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "hobart-warewash-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "HOBART_USERNAME",
+          "description": "Hobart Cloud-to-Cloud API account (e-mail).",
+          "isRequired": true,
+          "isSecret": false
+        },
+        {
+          "name": "HOBART_PASSWORD",
+          "description": "Hobart Cloud-to-Cloud API password.",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "HOBART_ALLOW_WRITE",
+          "description": "Set to true to expose the write tools (register a machine, change settings). Default false.",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

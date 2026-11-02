@@ -18,7 +18,7 @@ machines through the **Hobart Cloud-to-Cloud (C2C) API, Visiotronic 1.5**:
 - daily water, energy, detergent and rinse-aid consumption
 - the **hygiene protocol**: one entry per wash cycle, with its program
 - optional: register a machine, change dosage, density and autostart
-  times — only if you enable it, and only after you confirm
+  times, only if you enable it, and only after you confirm
 
 It is **read-only by default**. Write tools do not even exist unless you
 set `HOBART_ALLOW_WRITE=true`.
@@ -33,14 +33,14 @@ set `HOBART_ALLOW_WRITE=true`.
 
 ## Why this project?
 
-A connected Hobart dishwasher records useful data — temperatures, errors,
-consumption, every wash cycle — but it sits in the Hobart SmartConnect
+A connected Hobart dishwasher records useful data (temperatures, errors,
+consumption, every wash cycle), but it sits in the Hobart SmartConnect
 app, where you can look at it, not ask questions about it.
 
 This server is a small bridge between the Hobart C2C API and any
 [Model Context Protocol](https://modelcontextprotocol.io) client. Ask in
-plain language — _"Did the dishwasher in the main kitchen reach its rinse
-temperature today?"_ — and the assistant calls a precise tool and answers
+plain language, _"Did the dishwasher in the main kitchen reach its rinse
+temperature today?"_, and the assistant calls a precise tool and answers
 from your machine's data instead of guessing.
 
 As of November 2026 there was no other public MCP server, plugin or SDK
@@ -59,12 +59,53 @@ npm, PyPI).
 - **Works locally (stdio) and remotely (Streamable HTTP)**, so it plugs
   into Claude Code, Claude Desktop, claude.ai and ChatGPT.
 - **Claude Code plugin + Agent Skill** (`hobart-dishwashers`): teaches the
-  model the traps — stale data from offline machines, daily data that only
+  model the traps: stale data from offline machines, daily data that only
   refreshes overnight, undocumented parameter codes.
 - Token caching and refresh for the Hobart OAuth2 login; clear, actionable
   errors (`NOT_FOUND`, `NOT_BIDIRECTIONAL`, `AUTH_FAILED`, …).
 
 ## Quick start
+
+### 1. Store your Hobart credentials
+
+Create `~/.config/hobart-warewash-mcp/.env` (on Windows
+`%USERPROFILE%\.config\hobart-warewash-mcp\.env`):
+
+```bash
+HOBART_USERNAME=you@example.com
+HOBART_PASSWORD=your-password
+# HOBART_ALLOW_WRITE=true   # only if you want the write tools
+```
+
+Environment variables, when set, always win over this file.
+
+### 2. Connect your AI assistant
+
+**Claude Code: plugin (MCP server + skill)**
+
+```bash
+claude plugin marketplace add christophe77/hobart-warewash-mcp
+claude plugin install hobart-warewash@hobart-warewash-mcp
+```
+
+**Claude Desktop, Cursor, VS Code, Windsurf, Cline… (local stdio)**
+
+```json
+{
+  "mcpServers": {
+    "hobart-warewash": {
+      "command": "npx",
+      "args": ["-y", "hobart-warewash-mcp@0.1.0"]
+    }
+  }
+}
+```
+
+For the skill in Claude Desktop / claude.ai, zip
+`plugins/hobart-warewash/skills/hobart-dishwashers` and upload it in
+Settings → Capabilities → Skills.
+
+### From source
 
 ```bash
 git clone https://github.com/christophe77/hobart-warewash-mcp.git
@@ -75,34 +116,8 @@ cp .env.example .env    # fill HOBART_USERNAME and HOBART_PASSWORD
 node scripts/smoke.mjs  # calls every read tool against the real API
 ```
 
-The server reads `.env` from the current folder, then from its own
-package folder, so it works whatever folder the client starts it from.
-Real environment variables always win.
-
-### Claude Code — plugin (MCP server + skill)
-
-From the folder that contains your clone:
-
-```bash
-claude plugin marketplace add ./hobart-warewash-mcp
-claude plugin install hobart-warewash@hobart-warewash-mcp
-```
-
-### Claude Desktop, Cursor, VS Code, Windsurf, Cline… (local stdio)
-
-```json
-{
-  "mcpServers": {
-    "hobart-warewash": {
-      "command": "node",
-      "args": ["/path/to/hobart-warewash-mcp/dist/bin.js"]
-    }
-  }
-}
-```
-
-For the skill in Claude Desktop / claude.ai, zip `skills/hobart-dishwashers`
-and upload it in Settings → Capabilities → Skills.
+A clone reads `.env` from the current folder, then the user file above,
+then its own folder.
 
 ### ChatGPT and claude.ai (remote connector)
 
@@ -110,7 +125,7 @@ Web and mobile assistants only accept remote MCP servers over HTTPS. Run
 the HTTP mode and expose it, for example with a tunnel:
 
 ```bash
-npm run start:http                              # http://127.0.0.1:3333/mcp
+npx -y hobart-warewash-mcp@0.1.0 --http         # http://127.0.0.1:3333/mcp
 cloudflared tunnel --url http://localhost:3333  # or: ngrok http 3333
 ```
 
@@ -121,7 +136,7 @@ claude.ai cannot send custom headers, so the secret travels in the path;
 
 - **ChatGPT**: Settings → Apps & Connectors → Advanced → Developer mode →
   Create; paste the URL; authentication "No authentication". Paste
-  `skills/hobart-dishwashers/SKILL.md` into a project's instructions for
+  `plugins/hobart-warewash/skills/hobart-dishwashers/SKILL.md` into a project's instructions for
   the same domain knowledge.
 - **claude.ai**: Settings → Connectors → Add custom connector; paste the URL.
 
@@ -133,7 +148,7 @@ claude.ai cannot send custom headers, so the secret travels in the path;
 - "How much water and energy did each machine use yesterday?"
 - "Show me today's hygiene protocol: how many cycles, which programs?"
 - "Any active errors on any machine?"
-- With write mode: "Set autostart slot 1 to 06:30 on 867237207" — the
+- With write mode: "Set autostart slot 1 to 06:30 on 867237207". The
   assistant reads the current value, shows old → new, and waits for your yes.
 
 ## Available MCP tools
@@ -158,11 +173,11 @@ Machines without bidirectional communication refuse settings changes
 
 | Variable              | Default                     | Purpose                                    |
 | --------------------- | --------------------------- | ------------------------------------------ |
-| `HOBART_USERNAME`     | —                           | Hobart C2C account (required)              |
-| `HOBART_PASSWORD`     | —                           | Hobart C2C password (required)             |
+| `HOBART_USERNAME`     | (none)                      | Hobart C2C account (required)              |
+| `HOBART_PASSWORD`     | (none)                      | Hobart C2C password (required)             |
 | `HOBART_ALLOW_WRITE`  | `false`                     | Expose the write tools                     |
 | `PORT` / `HOST`       | `3333` / `127.0.0.1`        | HTTP mode listen address                   |
-| `MCP_HTTP_SECRET`     | —                           | Secret guarding the HTTP endpoint          |
+| `MCP_HTTP_SECRET`     | (none)                      | Secret guarding the HTTP endpoint          |
 | `HOBART_BASE_URL`, `HOBART_TOKEN_ENDPOINT`, `HOBART_CLIENT_ID`, `HOBART_SCOPE` | production Hobart values | Overrides |
 
 ## FAQ
@@ -172,7 +187,7 @@ Not that we could find. Hobart exposes a Cloud-to-Cloud REST API for
 partners; this project wraps it as an MCP server. It is unofficial.
 
 **Which Hobart machines are supported?**
-Any machine your Hobart C2C account can see — Hobart dishwashers
+Any machine your Hobart C2C account can see, i.e. Hobart dishwashers
 connected through SmartConnect. Tested on AMXXS-B-SEF.
 
 **Does it work with ChatGPT?**

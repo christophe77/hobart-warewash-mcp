@@ -1,6 +1,6 @@
 ---
 name: hobart-dishwashers
-description: How to answer questions about Hobart commercial dishwashers with the hobart_* MCP tools — which machines exist, whether one is healthy, what its errors, temperatures, consumption and hygiene protocol say, and how to change its settings safely. Use this whenever the conversation mentions Hobart, a dishwasher or warewasher serial number, SmartConnect, Visiotronic, or any hobart_* tool, even for a narrow question like "is the dishwasher OK" — the freshness and code-meaning traps below are where confident wrong answers come from.
+description: How to answer questions about Hobart commercial dishwashers with the hobart_* MCP tools: which machines exist, whether one is healthy, what its errors, temperatures, consumption and hygiene protocol say, and how to change its settings safely. Use this whenever the conversation mentions Hobart, a dishwasher or warewasher serial number, SmartConnect, Visiotronic, or any hobart_* tool, even for a narrow question like "is the dishwasher OK". The freshness and code-meaning traps below are where confident wrong answers come from.
 ---
 
 # Working with Hobart dishwashers
@@ -24,7 +24,7 @@ suggesting a workaround.
 
 ## Ladder
 
-1. `hobart_list_machines` — get serials. Never guess a serial.
+1. `hobart_list_machines`: get serials. Never guess a serial.
 2. `hobart_machine_overview` for "how is it doing".
 3. A detail tool only when the question needs it (full parameters, cycle log).
 
@@ -32,7 +32,7 @@ suggesting a workaround.
 
 - **`machineTime` in the machine list is the machine's clock at its last contact.** If it is
   days or weeks old, the machine is off, unplugged or offline, and every reading you get is
-  from that date — say so first, before quoting any number.
+  from that date. Say so first, before quoting any number.
 - **Daily data is not live.** Hobart refreshes it after the machine is powered off or shortly
   before midnight. It describes the last completed day of use.
 - **Every result states `fetched …` and whether it is cached.** The server caches errors
@@ -40,7 +40,7 @@ suggesting a workaround.
   again sooner returns the same answer; do not loop to "refresh".
 - "No active error" means none was reported, not that the machine is running.
 
-## What the codes mean — and what is not known
+## What the codes mean, and what is not known
 
 Known from the API and the machine itself:
 
@@ -60,7 +60,7 @@ Known from the API and the machine itself:
 
 The API does not return units for the daily consumption figures, and the many other `A0xx`
 (set-points) and `C0xx` (counters) codes are not documented here. When asked about one:
-quote the value and say its exact meaning is not documented — do not invent one. Comparing
+quote the value and say its exact meaning is not documented. Do not invent one. Comparing
 the same code across machines or across days is fine and often useful.
 
 ## Changing settings (only when the write tools exist)
@@ -70,13 +70,13 @@ This changes a real machine in a real kitchen.
 1. Read the current values with `hobart_get_machine_data`.
 2. Tell the person exactly what will change, old → new, on which serial.
 3. Call `hobart_update_settings` only after an explicit yes, with only the fields that change.
-4. `NOT_BIDIRECTIONAL` means the machine cannot be configured remotely at all — it is not a
+4. `NOT_BIDIRECTIONAL` means the machine cannot be configured remotely at all. It is not a
    transient failure; do not retry.
 
 Never change a setting because a reading "looks wrong": report it and let the person decide.
 
 ## Errors
 
-- `NOT_FOUND` — the serial is not on this account. List the machines.
-- `AUTH_FAILED` — configuration problem on the server side; retrying will not help.
-- `UPSTREAM` — the Hobart cloud failed; try once more later, not in a loop.
+- `NOT_FOUND`: the serial is not on this account. List the machines.
+- `AUTH_FAILED`: configuration problem on the server side; retrying will not help.
+- `UPSTREAM`: the Hobart cloud failed; try once more later, not in a loop.

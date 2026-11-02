@@ -64,7 +64,7 @@ export function createServer(client: HobartClient, config: HobartConfig, version
     {
       title: 'List Hobart machines',
       description:
-        'Lists the Hobart dishwashers registered on this account: serial number, machine type, protocol version and the machine clock at last contact. Start here — every other tool needs a serial number.',
+        'Lists the Hobart dishwashers registered on this account: serial number, machine type, protocol version and the machine clock at last contact. Start here: every other tool needs a serial number.',
       inputSchema: z.object({}),
       annotations: READ_ONLY,
     },

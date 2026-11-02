@@ -2,10 +2,13 @@
  * Configuration, read once from the environment.
  *
  * The defaults are the production Hobart Cloud-to-Cloud endpoints; only the account is
- * mandatory. A `.env` file in the working directory is loaded when present, so the same
- * build runs from a terminal, from Claude's plugin config, or behind a tunnel.
+ * mandatory. Environment variables win; then, in order, `.env` in the working directory,
+ * `~/.config/hobart-warewash-mcp/.env` (the place for credentials when run through npx or
+ * the plugin), and the `.env` of a cloned checkout.
  */
 import { existsSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export interface HobartConfig {
@@ -25,19 +28,26 @@ export interface HobartConfig {
 
 export class ConfigError extends Error {}
 
-/** The package's own .env, found from this file, so a plugin launched from any folder finds it. */
+export const USER_ENV = join(homedir(), '.config', 'hobart-warewash-mcp', '.env');
+
+/** The package's own .env, found from this file, so a clone launched from any folder finds it. */
 const PACKAGE_ENV = fileURLToPath(new URL('../.env', import.meta.url));
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): HobartConfig {
+  // The plugin passes unset shell variables through as empty strings; treat them as unset
+  // so the .env files below can still provide them.
+  for (const [key, value] of Object.entries(env)) {
+    if (key.startsWith('HOBART_') && value === '') delete env[key];
+  }
   // Values already in the environment win: loadEnvFile never overwrites them.
-  for (const file of ['.env', PACKAGE_ENV]) {
+  for (const file of ['.env', USER_ENV, PACKAGE_ENV]) {
     if (existsSync(file)) process.loadEnvFile(file);
   }
 
   const username = env['HOBART_USERNAME']?.trim() ?? '';
   const password = env['HOBART_PASSWORD'] ?? '';
   if (username === '' || password === '') {
-    throw new ConfigError('HOBART_USERNAME and HOBART_PASSWORD must be set (see .env.example).');
+    throw new ConfigError(`HOBART_USERNAME and HOBART_PASSWORD must be set, as environment variables or in ${USER_ENV} (see .env.example).`);
   }
 
   const secret = env['MCP_HTTP_SECRET']?.trim();
